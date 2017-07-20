@@ -1,0 +1,1159 @@
+swagger: '2.0'
+info:
+  description: >-
+    Here you will find details on the Reason API that can be used to perform
+    various functions on Reason.
+  version: 0.2.0
+  title: Reason API Swagger File
+  termsOfService: 'https://reason-dev.eng.absa.co.za'
+  contact:
+    name: Reason API Support
+    email: reason-support@absa.co.za
+host: reason-dev.eng.absa.co.za
+basePath: /api
+schemes:
+  - https
+  - http
+securityDefinitions:
+  basicAuth:
+    type: basic
+    description: >-
+      HTTP Basic Authentication. This values contains the token that is
+      generated from the auth_user service and passed in the header as
+      Authorization and Bearer <token>
+paths:
+  /templates:
+    get:
+      security:
+        - basicAuth: []
+      tags:
+        - Templates
+      summary: >-
+        This API will be used to popuate various controls on the provisioning
+        screen
+      produces:
+        - application/json
+      parameters:
+        - name: Authorization
+          in: header
+          type: string
+          required: true
+          default: >-
+            bearer
+            eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjp7IiRvaWQiOiI1ODU3ZDFhMWYxZjE3OWMzZTA5OTRkZmQifSwicm9sZXMiOlsiQWRtaW5pc3RyYX
+      responses:
+        '200':
+          description: Success
+          schema:
+            $ref: '#/definitions/request_template_main'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorised
+        '404':
+          description: Resource not found
+        '500':
+          description: Internal server error
+  /auth_user:
+    post:
+      tags:
+        - Auth User
+      summary: >-
+        This service will be used to authenticate a Reason registered user
+        against Active Directory. When the user is authenticated successfully
+        but does not have a Reason profile a profile will be automatically
+        registered on Reason.
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/auth_user'
+      responses:
+        '200':
+          description: Successfully authenticated user
+          schema:
+            $ref: '#/definitions/response_auth_user_token'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorised
+        '404':
+          description: Resource not found
+        '500':
+          description: Internal server error
+  '/users/{username}/products/':
+    get:
+      security:
+        - basicAuth: []
+      tags:
+        - Users
+        - Products
+      summary: >-
+        This API can be used to retrieve related Reason Products for the
+        supplied user.
+      produces:
+        - application/json
+      parameters:
+        - name: username
+          in: path
+          type: string
+          required: true
+        - name: Authorization
+          in: header
+          type: string
+          required: true
+          default: >-
+            bearer
+            eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjp7IiRvaWQiOiI1ODU3ZDFhMWYxZjE3OWMzZTA5OTRkZmQifSwicm9sZXMiOlsiQWRtaW5pc3RyYX
+      responses:
+        '200':
+          description: success operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/product_summary'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorised
+        '404':
+          description: Resource not found
+        '500':
+          description: Internal server error
+  /users/:
+    get:
+      security:
+        - basicAuth: []
+      tags:
+        - Users
+      summary: This API will return all Reason registered users
+      consumes:
+        - application/json
+      parameters:
+        - name: Authorization
+          in: header
+          type: string
+          required: true
+          default: >-
+            bearer
+            eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjp7IiRvaWQiOiI1ODU3ZDFhMWYxZjE3OWMzZTA5OTRkZmQifSwicm9sZXMiOlsiQWRtaW5pc3RyYX
+      responses:
+        '201':
+          description: success operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/response_user_detail'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorised
+        '404':
+          description: Resource not found
+        '500':
+          description: Internal server error
+    post:
+      security:
+        - basicAuth: []
+      tags:
+        - Users
+      summary: >-
+        This APi defines the inputs required in order to create a Reason
+        profile.
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/request_user'
+        - name: Authorization
+          in: header
+          type: string
+          required: true
+          default: >-
+            bearer
+            eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjp7IiRvaWQiOiI1ODU3ZDFhMWYxZjE3OWMzZTA5OTRkZmQifSwicm9sZXMiOlsiQWRtaW5pc3RyYX
+      responses:
+        '201':
+          description: Create user profile
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorised
+        '404':
+          description: Resource not found
+        '500':
+          description: Internal server error
+  '/users/{userID}/roles':
+    put:
+      security:
+        - basicAuth: []
+      tags:
+        - Users
+        - Roles
+      summary: This API will return all the possible Reason roles a user could have
+      produces:
+        - application/json
+      parameters:
+        - name: userID
+          in: path
+          description: ID of user profile being updated
+          required: true
+          type: string
+        - name: body
+          in: body
+          required: true
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/request_role_update'
+        - name: Authorization
+          in: header
+          type: string
+          required: true
+          default: >-
+            bearer
+            eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjp7IiRvaWQiOiI1ODU3ZDFhMWYxZjE3OWMzZTA5OTRkZmQifSwicm9sZXMiOlsiQWRtaW5pc3RyYX
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/response_role_update'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorised
+        '404':
+          description: Resource not found
+        '500':
+          description: Internal server error
+  /users:
+    get:
+      security:
+        - basicAuth: []
+      tags:
+        - Users
+      summary: This API will search for a Reason registered user via the username
+      produces:
+        - application/json
+      parameters:
+        - name: username
+          in: query
+          description: The Reason username
+          required: true
+          type: string
+        - name: Authorization
+          in: header
+          type: string
+          required: true
+          default: >-
+            bearer
+            eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjp7IiRvaWQiOiI1ODU3ZDFhMWYxZjE3OWMzZTA5OTRkZmQifSwicm9sZXMiOlsiQWRtaW5pc3RyYX
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/response_user_detail'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorised
+        '404':
+          description: Resource not found
+        '500':
+          description: Internal server error
+  '/users/{_id}':
+    put:
+      security:
+        - basicAuth: []
+      tags:
+        - Users
+      summary: This API will update the user object
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/request_user'
+        - name: _id
+          in: path
+          description: Reason UUID ID of user profile to be updated
+          required: true
+          type: string
+        - name: Authorization
+          in: header
+          type: string
+          required: true
+          default: >-
+            bearer
+            eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjp7IiRvaWQiOiI1ODU3ZDFhMWYxZjE3OWMzZTA5OTRkZmQifSwicm9sZXMiOlsiQWRtaW5pc3RyYX
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/response_user_detail'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorised
+        '404':
+          description: Resource not found
+        '500':
+          description: Internal server error
+    get:
+      security:
+        - basicAuth: []
+      tags:
+        - Users
+      summary: >-
+        This API returns the registered Reason profile details for a specific
+        user.
+      produces:
+        - application/json
+      parameters:
+        - name: _id
+          in: path
+          description: Reason UUID ID of user profile returned
+          required: true
+          type: string
+        - name: Authorization
+          in: header
+          type: string
+          required: true
+          default: >-
+            bearer
+            eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjp7IiRvaWQiOiI1ODU3ZDFhMWYxZjE3OWMzZTA5OTRkZmQifSwicm9sZXMiOlsiQWRtaW5pc3RyYX
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/response_user_detail'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorised
+        '404':
+          description: Resource not found
+        '500':
+          description: Internal server error
+  '/products/{productCode}/deployments/{uuid}':
+    delete:
+      security:
+        - basicAuth: []
+      tags:
+        - Products
+        - Deployments
+      summary: This API will destroy a specific Reason deployment
+      produces:
+        - application/json
+      parameters:
+        - name: productCode
+          in: path
+          description: ID of specific product
+          required: true
+          type: string
+        - name: uuid
+          in: path
+          description: ID of specific deployment
+          required: true
+          type: string
+        - name: Authorization
+          in: header
+          type: string
+          required: true
+          default: >-
+            bearer
+            eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjp7IiRvaWQiOiI1ODU3ZDFhMWYxZjE3OWMzZTA5OTRkZmQifSwicm9sZXMiOlsiQWRtaW5pc3RyYX
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            $ref: '#/definitions/delete_response_main'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorised
+        '404':
+          description: Resource not found
+        '500':
+          description: Internal server error
+  /products:
+    post:
+      security:
+        - basicAuth: []
+      tags:
+        - Products
+      summary: This API will be used to create a Reason Product.
+      consumes:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/request_create_product'
+        - name: Authorization
+          in: header
+          type: string
+          required: true
+          default: >-
+            bearer
+            eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjp7IiRvaWQiOiI1ODU3ZDFhMWYxZjE3OWMzZTA5OTRkZmQifSwicm9sZXMiOlsiQWRtaW5pc3RyYX
+      responses:
+        '201':
+          description: Successfully created a Reason Product
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorised
+        '404':
+          description: Resource not found
+        '409':
+          description: Conflict
+        '500':
+          description: Internal server error
+  '/products/{productCode}/':
+    get:
+      security:
+        - basicAuth: []
+      tags:
+        - Products
+      summary: This API will retrieve the detail of a specific product
+      produces:
+        - application/json
+      parameters:
+        - name: productCode
+          in: path
+          description: ID of the Reason product
+          required: true
+          type: string
+        - name: Authorization
+          in: header
+          type: string
+          required: true
+          default: >-
+            bearer
+            eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjp7IiRvaWQiOiI1ODU3ZDFhMWYxZjE3OWMzZTA5OTRkZmQifSwicm9sZXMiOlsiQWRtaW5pc3RyYX
+      responses:
+        '200':
+          description: Success operation
+          schema:
+            $ref: '#/definitions/specific_product_response'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorised
+        '404':
+          description: Resource not found
+        '500':
+          description: Internal server error
+    put:
+      security:
+        - basicAuth: []
+      tags:
+        - Products
+      summary: This API will be used to update a specific Reason product.
+      consumes:
+        - application/json
+      parameters:
+        - in: path
+          name: productCode
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/request_update_product'
+        - name: Authorization
+          in: header
+          type: string
+          required: true
+          default: bearer
+      responses:
+        '200':
+          description: Product updated
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorised
+        '404':
+          description: Resource not found
+        '500':
+          description: Internal server error
+  '/products/{ProductCode}/deployments':
+    post:
+      security:
+        - basicAuth: []
+      tags:
+        - Products
+        - Deployments
+      summary: This API will be used to deploy a new reason instance
+      produces:
+        - application/json
+      consumes:
+        - application/json
+      parameters:
+        - name: ProductCode
+          in: path
+          required: true
+          type: string
+        - in: body
+          name: body
+          required: true
+          schema:
+            $ref: '#/definitions/request_provision_main'
+        - name: Authorization
+          in: header
+          type: string
+          required: true
+          default: >-
+            bearer
+            eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjp7IiRvaWQiOiI1ODU3ZDFhMWYxZjE3OWMzZTA5OTRkZmQifSwicm9sZXMiOlsiQWRtaW5pc3RyYX
+      responses:
+        '201':
+          description: Created
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorised
+        '404':
+          description: Resource not found
+        '500':
+          description: Internal server error
+  /deployments:
+    get:
+      security:
+        - basicAuth: []
+      tags:
+        - Deployments
+      summary: This API will be used to retrieve deployments associated to the user
+      produces:
+        - application/json
+      parameters:
+        - name: productCode
+          in: query
+          description: Unique identifier for a Reason Product
+          type: string
+        - name: excludedResourceState
+          in: query
+          description: Deployment state to exclude
+          type: string
+        - name: Authorization
+          in: header
+          type: string
+          required: true
+          default: >-
+            bearer
+            eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjp7IiRvaWQiOiI1ODU3ZDFhMWYxZjE3OWMzZTA5OTRkZmQifSwicm9sZXMiOlsiQWRtaW5pc3RyYX
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/deployment_object'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorised
+        '404':
+          description: Resource not found
+        '500':
+          description: Internal server error
+  /roles:
+    get:
+      security:
+        - basicAuth: []
+      tags:
+        - Roles
+      summary: Get all user roles
+      produces:
+        - application/json
+      parameters:
+        - name: Authorization
+          in: header
+          type: string
+          required: true
+          default: >-
+            bearer
+            eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjp7IiRvaWQiOiI1ODU3ZDFhMWYxZjE3OWMzZTA5OTRkZmQifSwicm9sZXMiOlsiQWRtaW5pc3RyYX
+      responses:
+        '200':
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: '#/definitions/retrieve_system_roles'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorised
+        '404':
+          description: Resource not found
+        '500':
+          description: Internal server error
+definitions:
+  request_template_main:
+    type: object
+    required:
+      - os
+      - size
+      - additionalDiskSizes
+      - subnet
+    properties:
+      os:
+        type: array
+        items:
+          $ref: '#/definitions/request_template_os'
+      size:
+        type: array
+        items:
+          $ref: '#/definitions/request_template_size'
+      additionalDiskSizes:
+        $ref: '#/definitions/request_template_additional_disks'
+      subnet:
+        type: array
+        items:
+          $ref: '#/definitions/request_template_subnet'
+      chefEnvironments:
+        type: array
+        items:
+          $ref: '#/definitions/request_template_chef_environments'
+  request_template_chef_environments:
+    type: object
+    required:
+      - id
+      - description
+      - defaultValue
+    properties:
+      id:
+        type: string
+        enum:
+          - union
+          - rehearsal
+          - delivered
+      description:
+        type: string
+      defaultValue:
+        type: boolean
+  request_template_os:
+    type: object
+    required:
+      - id
+      - description
+      - defaultValue
+      - minRootVolSize
+    properties:
+      id:
+        type: string
+      description:
+        type: string
+      defaultValue:
+        type: boolean
+      minRootVolSize:
+        type: number
+        format: int32
+  request_template_additional_disks:
+    type: object
+    required:
+      - minimum
+      - maximum
+      - unit
+      - defaultValue
+    properties:
+      minimum:
+        type: number
+        format: int32
+      maximum:
+        type: number
+        format: int32
+      unit:
+        type: string
+      defaultValue:
+        type: number
+        format: int32
+  request_template_subnet:
+    type: object
+    required:
+      - id
+      - description
+      - defaultValue
+    properties:
+      id:
+        type: string
+      description:
+        type: string
+      defaultValue:
+        type: boolean
+  request_template_size:
+    type: object
+    required:
+      - id
+      - description
+      - defaultValue
+    properties:
+      id:
+        type: string
+        enum:
+          - M
+          - L
+          - X
+      description:
+        type: string
+      defaultValue:
+        type: boolean
+  delete_response_main:
+    type: object
+    required:
+      - _id
+      - logs
+      - machine_spec
+      - outputs
+      - product_id
+      - requestor_id
+      - status
+      - uuid
+    properties:
+      _id:
+        $ref: '#/definitions/user_object_id_oid'
+      logs:
+        type: array
+        items:
+          type: string
+      machine_spec:
+        $ref: '#/definitions/delete_response_machine_spec'
+      outputs:
+        $ref: '#/definitions/delete_response_outputs'
+      product_id:
+        $ref: '#/definitions/product_id_oid'
+      requestor_id:
+        $ref: '#/definitions/requestor_id_oid'
+      status:
+        type: string
+      uuid:
+        type: string
+  delete_response_outputs:
+    type: object
+  product_id_oid:
+    type: object
+    properties:
+      $oid:
+        type: string
+  requestor_id_oid:
+    type: object
+    properties:
+      $oid:
+        type: string
+  delete_response_machine_spec:
+    type: object
+    required:
+      - project_name
+      - name
+      - os
+      - size
+      - root_volume_size
+      - additional_disks
+      - subnet
+      - ssh_key_name
+    properties:
+      project_name:
+        type: string
+      name:
+        type: string
+      os:
+        type: string
+      size:
+        type: string
+      root_volume_size:
+        type: string
+      additional_disks:
+        type: array
+        items:
+          type: number
+          format: int32
+      subnet:
+        type: string
+      ssh_key_name:
+        type: string
+  retrieve_system_roles:
+    type: object
+    required:
+      - _id
+      - type
+    properties:
+      _id:
+        $ref: '#/definitions/role_id_oid'
+      type:
+        type: string
+  response_role_update:
+    type: object
+    required:
+      - _id
+      - email
+      - name
+      - role_ids
+      - surname
+      - user_name
+    properties:
+      _id:
+        $ref: '#/definitions/user_object_id_oid'
+      email:
+        type: string
+      name:
+        type: string
+      role_ids:
+        type: array
+        items:
+          $ref: '#/definitions/role_id_oid'
+      surname:
+        type: string
+      user_name:
+        type: string
+  request_role_update:
+    type: object
+    required:
+      - role_ids
+    properties:
+      role_ids:
+        type: string
+  deployment_object:
+    type: object
+    required:
+      - uuid
+      - resourceName
+      - osName
+      - ipAddress
+      - hostName
+      - resourceRequestor
+      - resourceState
+      - product
+      - dateTimeCreated
+      - chefNodeName
+      - environment
+    properties:
+      uuid:
+        type: string
+      resourceName:
+        type: string
+      osName:
+        type: string
+      resourceRequestor:
+        type: string
+      ipAddress:
+        type: string
+      hostName:
+        type: string
+      resourceState:
+        type: string
+      product:
+        type: string
+      dateTimeCreated:
+        type: string
+        format: date-time
+      chefNodeName:
+        type: string
+      environment:
+        type: string
+        enum:
+          - union
+          - rehearsal
+          - delivered
+  request_provision_main:
+    type: object
+    required:
+      - ProjectName
+      - ProjectCode
+      - ProvisioningName
+      - OS
+      - Size
+      - RootVolumeSize
+      - AdditionalDisks
+      - Subnet
+      - PublicSSHKey
+      - ChefEnv
+    properties:
+      ProjectName:
+        type: string
+        default: TestDestroyAndre
+      ProjectCode:
+        type: string
+        default: TESTDESTROY01
+      ProvisioningName:
+        type: string
+        default: Destroyme-08
+      OS:
+        $ref: '#/definitions/request_provision_os'
+      Size:
+        $ref: '#/definitions/request_provision_size'
+      RootVolumeSize:
+        type: number
+        format: int32
+        default: 10
+      AdditionalDisks:
+        type: array
+        items:
+          type: number
+          format: int32
+      Subnet:
+        $ref: '#/definitions/request_provision_subnet'
+      PublicSSHKey:
+        type: string
+      OptionalKeyName:
+        type: string
+        default: Destroyme-Andre-08
+      ChefRunList:
+        type: string
+      ChefOptionalAttributes:
+        type: string
+      ChefEnv:
+        type: string
+        default: union
+        enum:
+          - union
+          - rehearsal
+          - delivered
+  request_provision_os:
+    type: object
+    required:
+      - id
+      - description
+      - defaultValue
+      - minRootVolSize
+    properties:
+      id:
+        type: string
+        default: RHEL6
+      description:
+        type: string
+        default: RHEL-6.8_HVM_GA-20160503-x86_64-1-Hourly2-GP2
+      defaultValue:
+        type: boolean
+        default: true
+      minRootVolSize:
+        type: number
+        format: int32
+        default: 10
+  request_provision_size:
+    type: object
+    required:
+      - id
+      - description
+      - defaultValue
+    properties:
+      id:
+        type: string
+        default: M
+      description:
+        type: string
+        default: 2 x vCPU 4GB RAM (medium)
+      defaultValue:
+        type: boolean
+        default: true
+  request_provision_subnet:
+    type: object
+    required:
+      - id
+      - description
+      - defaultValue
+    properties:
+      id:
+        type: string
+        default: subnet-1cbad76a
+      description:
+        type: string
+        default: General VPC - eu-west-1a
+      defaultValue:
+        type: boolean
+        default: true
+  product_summary:
+    description: product definition
+    type: object
+    required:
+      - productName
+      - productCode
+      - resourceCount
+      - userCount
+    properties:
+      productName:
+        type: string
+      productCode:
+        type: string
+      resourceCount:
+        type: integer
+        format: int32
+      userCount:
+        type: integer
+        format: int32
+      productCost:
+        type: string
+  specific_product_response:
+    description: Response payload for a specific product
+    type: object
+    required:
+      - productName
+      - productCode
+      - costCentreType
+      - productOwner
+    properties:
+      productName:
+        type: string
+      productCode:
+        type: string
+      costCentreType:
+        type: string
+        enum:
+          - CCN
+          - IN_NUMBER
+      costCentreValue:
+        type: string
+      productOwner:
+        type: string
+      usernames:
+        type: array
+        items:
+          type: string
+  request_update_product:
+    description: Update users on a specific product
+    type: object
+    required:
+      - usernames
+    properties:
+      usernames:
+        type: array
+        items:
+          type: string
+  request_create_product:
+    description: Create a Reason product
+    type: object
+    required:
+      - productCode
+      - productName
+      - costCentre
+      - costCentreType
+    properties:
+      productCode:
+        type: string
+      productName:
+        type: string
+      costCentre:
+        type: string
+      costCentreType:
+        type: string
+        enum:
+          - CCN
+          - IN_NUMBER
+  response_auth_user_token:
+    description: The response object when auth passes
+    type: object
+    required:
+      - auth_token
+      - user
+    properties:
+      auth_token:
+        type: string
+      user:
+        $ref: '#/definitions/user_object_id'
+  user_object_id:
+    type: object
+    required:
+      - id
+      - email
+      - name
+      - surname
+      - username
+    properties:
+      id:
+        $ref: '#/definitions/user_object_id_oid'
+      email:
+        type: string
+      name:
+        type: string
+      surname:
+        type: string
+      username:
+        type: string
+  user_object_id_oid:
+    type: object
+    properties:
+      $oid:
+        type: string
+  role_id_oid:
+    type: object
+    properties:
+      $oid:
+        type: string
+  request_user:
+    type: object
+    properties:
+      user:
+        $ref: '#/definitions/user'
+  auth_user:
+    type: object
+    required:
+      - user_name
+      - password
+    properties:
+      user_name:
+        default: admin
+        type: string
+      password:
+        default: password
+        type: string
+        format: password
+  response_user_detail:
+    type: object
+    properties:
+      _id:
+        $ref: '#/definitions/user_object_id_oid'
+      email:
+        type: string
+      name:
+        type: string
+      role_ids:
+        type: array
+        items:
+          $ref: '#/definitions/role_id_oid'
+      surname:
+        type: string
+      user_name:
+        type: string
+  user:
+    type: object
+    required:
+      - email
+      - user_name
+      - password
+      - name
+      - surname
+    properties:
+      email:
+        type: string
+        default: reason-support@absa.co.za
+      user_name:
+        type: string
+        default: admin
+      password:
+        type: string
+        format: password
+        default: password
+      name:
+        type: string
+        default: ReasonAdminName
+      surname:
+        type: string
+        default: ReasonAdminSurname
+      role_ids:
+        type: array
+        items:
+        
+          type: string
